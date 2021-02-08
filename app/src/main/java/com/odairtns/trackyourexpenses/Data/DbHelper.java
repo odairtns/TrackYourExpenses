@@ -25,6 +25,7 @@ public class DbHelper {
     public static final String COLUMN_AMOUNT = "AMOUNT";
     public static final String COLUMN_DETAIL = "DETAIL";
     public static final String COLUMN_PAYMENT_METHOD = "PAYMENT_METHOD";
+    public static final String COLUMN_AMOUNT_TYPE = "AMOUNT_TYPE";
 
     public static final String COLUMN_IS_STD_CURRENCY = "STD_IS_STD_CURRENCY";
     public static final String COLUMN_EXG_RATE = "EXG_RATE";

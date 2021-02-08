@@ -47,6 +47,7 @@ public class DbHandler extends SQLiteOpenHelper {
                 DbHelper.COLUMN_AMOUNT + " REAL NOT NULL, " +
                 DbHelper.COLUMN_DETAIL + " TEXT, " +
                 DbHelper.COLUMN_PAYMENT_METHOD + " TEXT, " +
+                DbHelper.COLUMN_AMOUNT_TYPE + " INTEGER, " +
                 " PRIMARY KEY (" + DbHelper.COLUMN_ID + ", " + DbHelper.COLUMN_TRIP_ID + "));";
         db.execSQL(CreateTripRecord);
 
@@ -160,12 +161,12 @@ public class DbHandler extends SQLiteOpenHelper {
             InsertPaymentMethod = "INSERT INTO " + DbHelper.TABLE_PAYMENT_METHOD + "(" +
                     DbHelper.COLUMN_PAYMENT_METHOD + ") VALUES " +
                     "('Dinheiro'), ('Débito'), ('Crédito'), ('Crédito - VISA'),('Crédito - MasterCard'),('Crédito - AMEX')," +
-                    "('Cartão Pré Pago'), ('Transferência'),('APP')";
+                    "('Cartão Pré Pago'),('Vale Refeição'), ('Transferência'),('APP')";
         }else{
             InsertPaymentMethod = "INSERT INTO " + DbHelper.TABLE_PAYMENT_METHOD + "(" +
                     DbHelper.COLUMN_PAYMENT_METHOD + ") VALUES " +
                     "('Cash'), ('Debit'), ('Credit Card'), ('Credit Card - VISA'),('Credit Card - MasterCard'),('Credit Card - AMEX')," +
-                    "('Pre Paid Credit Card'), ('Cash Transfer'),('APP')";}
+                    "('Pre Paid Credit Card'),('Meal Ticket'),('Cash Transfer'),('APP')";}
         db.execSQL(InsertPaymentMethod);
 
 
@@ -176,6 +177,7 @@ public class DbHandler extends SQLiteOpenHelper {
         //Do not need to drop the tables
         //Need to create the code to update tables when update occurs
         //This will be done when new version is released
+        /*
         String drop = "drop table IF EXISTS "+DbHelper.TABLE_TRIP +";";
         db.execSQL(drop);
         drop = " drop table IF EXISTS "+DbHelper.TABLE_TRIP_RECORD+";";
@@ -188,6 +190,11 @@ public class DbHandler extends SQLiteOpenHelper {
         db.execSQL(drop);
         drop = " drop table IF EXISTS "+DbHelper.TABLE_PAYMENT_METHOD+";";
         db.execSQL(drop);
+        onCreate(db);
+        */
+         String update = "alter table "+DbHelper.TABLE_TRIP_RECORD+"  add column "+
+                 DbHelper.COLUMN_AMOUNT_TYPE+" not null default -1";
+        db.execSQL(update);
         onCreate(db);
     }
 
@@ -324,9 +331,10 @@ public class DbHandler extends SQLiteOpenHelper {
         values.put(DbHelper.COLUMN_DATE,tripRecord.getDate());
         values.put(DbHelper.COLUMN_EXP_TYPE, tripRecord.getExpType());
         values.put(DbHelper.COLUMN_CURRENCY_ID, tripRecord.getCurrency());
-        values.put(DbHelper.COLUMN_AMOUNT, tripRecord.getAmount());
+        values.put(DbHelper.COLUMN_AMOUNT, tripRecord.getAmountType() * tripRecord.getAmount());
         values.put(DbHelper.COLUMN_DETAIL, tripRecord.getDetails());
         values.put(DbHelper.COLUMN_PAYMENT_METHOD, tripRecord.getPaymentMethod());
+        values.put(DbHelper.COLUMN_AMOUNT_TYPE, tripRecord.getAmountType());
         db.insert(DbHelper.TABLE_TRIP_RECORD, null, values);
         db.close();
     }
@@ -340,6 +348,7 @@ public class DbHandler extends SQLiteOpenHelper {
                 DbHelper.COLUMN_AMOUNT + " = '" + tripRecord.getAmount() + "', "+
                 DbHelper.COLUMN_DETAIL + " = '" + tripRecord.getDetails() + "', "+
                 DbHelper.COLUMN_PAYMENT_METHOD + " = '" + tripRecord.getPaymentMethod() +
+                DbHelper.COLUMN_AMOUNT_TYPE + " = '" + tripRecord.getAmountType() +
                 "' where " + DbHelper.COLUMN_ID + " = " + tripRecord.getId() + " and "+
                 DbHelper.COLUMN_TRIP_ID + " = "+ tripRecord.getTripID();
         db.execSQL(updateTripRecord);
@@ -391,23 +400,6 @@ public class DbHandler extends SQLiteOpenHelper {
         cursor.close();
         return trip;
     }
-
-  /*  public Boolean getTripMultiCurrency (int tripID){
-        SQLiteDatabase db = this.getReadableDatabase();
-        String query = "select "+DbHelper.COLUMN_MULTI_CURRENCY+" from "+DbHelper.TABLE_TRIP+
-                " where "+DbHelper.COLUMN_ID + " = " +tripID;
-        Cursor cursor = db.rawQuery(query,null);
-        if(cursor.moveToFirst()){
-            int i = cursor.getInt(cursor.getColumnIndex(DbHelper.COLUMN_MULTI_CURRENCY));
-            if(i == 1)
-                return Boolean.TRUE;
-            else
-                return  Boolean.FALSE;
-        }
-        return  Boolean.FALSE;
-    }
-
-   */
 
     public List<Trip> getTrips (){
         List<Trip> list;
@@ -720,20 +712,6 @@ public class DbHandler extends SQLiteOpenHelper {
             }while (cursorCurrency.moveToNext());
         }
 
-  /*      if(cursor.moveToFirst()){
-            do {
-            tripRecord = new TripRecord();
-            tripRecord.setTripID(tripID);
-            tripRecord.setAmount(cursor.getDouble(cursor.getColumnIndex(DbHelper.COLUMN_AMOUNT)));
-            tripRecord.setExpType(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_EXP_TYPE)));
-            tripRecord.setCurrency(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_CURRENCY_ID)));
-            double stdAmount = cursor.getDouble(cursor.getColumnIndex(DbHelper.COLUMN_AMOUNT)) *
-                    getExgRate(tripID,cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_CURRENCY_ID)));
-            tripRecord.setAmountStdCurrency(stdAmount);
-            tripRecordList.add(tripRecord);
-            }while(cursor.moveToNext());}
-
-   */
         return tripRecordList;
     }
 

@@ -10,6 +10,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 
@@ -28,6 +29,7 @@ public class InsertRecord extends AppCompatActivity implements View.OnClickListe
     private Button mSaveB, mCancelB, mSaveAdd;
     private EditText mDate, mExpType, mAmount, mCurrency, mPaymentMethod;
     private TextInputEditText mDetails;
+    private CheckBox mAmountType;
     private DbHandler dbHandler;
     private TripRecord tripRecord;
     private int tripID;
@@ -61,6 +63,8 @@ public class InsertRecord extends AppCompatActivity implements View.OnClickListe
         trip = dbHandler.getTrip(tripID);
         mCurrency.setText(trip.getStdCurrency());
         getTripMultiCurrency = trip.getMultipleCurrency();
+        mAmountType = findViewById(R.id.amountType);
+        mAmountType.setOnClickListener(this);
 
     }
 
@@ -149,19 +153,26 @@ public class InsertRecord extends AppCompatActivity implements View.OnClickListe
                 });
                 expAlertBuilder.create().show();
                 break;
+
         }
     }
 
     public int InsertTripRecord(Context ctx){
         if(!mDate.getText().toString().isEmpty() && !mExpType.getText().toString().isEmpty() &&
                 !mAmount.getText().toString().isEmpty() && !mCurrency.getText().toString().isEmpty()) {
+            int amountType;
             tripRecord = new TripRecord();
+            if(mAmountType.isChecked() == Boolean.FALSE)
+                amountType = -1;
+            else
+                amountType = 1;
             tripRecord.setDate(mDate.getText().toString());
             tripRecord.setExpType(mExpType.getText().toString());
             tripRecord.setCurrency(mCurrency.getText().toString());
-            tripRecord.setAmount(Double.valueOf(mAmount.getText().toString()));
+            tripRecord.setAmount(Double.valueOf(mAmount.getText().toString()) * amountType);
             tripRecord.setDetails(mDetails.getText().toString());
             tripRecord.setPaymentMethod(mPaymentMethod.getText().toString());
+            tripRecord.setAmountType(amountType);
 
             if (getTripMultiCurrency == Boolean.TRUE) {
                 Float exgRate = dbHandler.getExgRate(tripID, mCurrency.getText().toString());

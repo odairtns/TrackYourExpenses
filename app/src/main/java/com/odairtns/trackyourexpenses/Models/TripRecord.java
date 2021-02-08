@@ -1,10 +1,9 @@
 package com.odairtns.trackyourexpenses.Models;
 
 public class TripRecord  {
-    int id, tripID;
+    int id, tripID, amountType;
     String date, currency, details, expType, paymentMethod;
     Double amount, amountStdCurrency, storedExgAmount;
-
     public TripRecord() {
     }
 
@@ -19,6 +18,20 @@ public class TripRecord  {
         this.amount = amount;
 
     }
+
+    public TripRecord(int id, int tripID, String date, String currency, String details,
+                      String expType, Double amount, int amountType) {
+        this.id = id;
+        this.tripID = tripID;
+        this.date = date;
+        this.currency = currency;
+        this.details = details;
+        this.expType = expType;
+        this.amount = amount;
+        this.amountType = amountType;
+
+    }
+
 
     public TripRecord(int id, int tripID, String date, String currency, String details,
                       String expType, Double amount, Double amountStdCurrency) {
@@ -111,4 +124,13 @@ public class TripRecord  {
     public void setPaymentMethod(String paymentMethod) {
         this.paymentMethod = paymentMethod;
     }
+
+    public int getAmountType() {
+        return amountType;
+    }
+
+    public void setAmountType(int amountType) {
+        this.amountType = amountType;
+    }
+
 }

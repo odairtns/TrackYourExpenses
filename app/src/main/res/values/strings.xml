@@ -158,5 +158,6 @@
     <string name="base_year">Base Year</string>
     <string name="year">Year</string>
     <string name="info">Info</string>
+    <string name="income">Income</string>
 
 </resources>
