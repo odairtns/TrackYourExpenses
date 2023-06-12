@@ -47,7 +47,7 @@ public class DbHandler extends SQLiteOpenHelper {
                 DbHelper.COLUMN_AMOUNT + " REAL NOT NULL, " +
                 DbHelper.COLUMN_DETAIL + " TEXT, " +
                 DbHelper.COLUMN_PAYMENT_METHOD + " TEXT, " +
-                DbHelper.COLUMN_AMOUNT_TYPE + " INTEGER, " +
+                DbHelper.COLUMN_AMOUNT_TYPE + " INTEGER not null default -1, " +
                 " PRIMARY KEY (" + DbHelper.COLUMN_ID + ", " + DbHelper.COLUMN_TRIP_ID + "));";
         db.execSQL(CreateTripRecord);
 
@@ -192,10 +192,14 @@ public class DbHandler extends SQLiteOpenHelper {
         db.execSQL(drop);
         onCreate(db);
         */
-         String update = "alter table "+DbHelper.TABLE_TRIP_RECORD+"  add column "+
-                 DbHelper.COLUMN_AMOUNT_TYPE+" not null default -1";
+        String updateTable = "alter table "+DbHelper.TABLE_TRIP_RECORD+"  add column "+
+                 DbHelper.COLUMN_AMOUNT_TYPE+" INTEGER not null default -1";
+        db.execSQL(updateTable);
+        String update = "update "+DbHelper.TABLE_TRIP_RECORD+"  set "+
+                DbHelper.COLUMN_AMOUNT_TYPE+" = -1 where "+
+                DbHelper.COLUMN_AMOUNT_TYPE+" is null";
         db.execSQL(update);
-        onCreate(db);
+
     }
 
     //  Custom Methods to Handle DB Operations

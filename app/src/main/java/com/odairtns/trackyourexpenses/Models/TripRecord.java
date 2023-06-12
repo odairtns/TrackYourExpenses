@@ -7,17 +7,6 @@ public class TripRecord  {
     public TripRecord() {
     }
 
-    public TripRecord(int id, int tripID, String date, String currency, String details,
-                      String expType, Double amount) {
-        this.id = id;
-        this.tripID = tripID;
-        this.date = date;
-        this.currency = currency;
-        this.details = details;
-        this.expType = expType;
-        this.amount = amount;
-
-    }
 
     public TripRecord(int id, int tripID, String date, String currency, String details,
                       String expType, Double amount, int amountType) {
@@ -34,7 +23,7 @@ public class TripRecord  {
 
 
     public TripRecord(int id, int tripID, String date, String currency, String details,
-                      String expType, Double amount, Double amountStdCurrency) {
+                      String expType, Double amount, Double amountStdCurrency, int amountType) {
         this.id = id;
         this.tripID = tripID;
         this.date = date;
@@ -43,6 +32,7 @@ public class TripRecord  {
         this.expType = expType;
         this.amount = amount;
         this.amountStdCurrency = amountStdCurrency;
+        this.amountType = amountType;
     }
 
     public int getId() {

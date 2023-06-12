@@ -108,4 +108,6 @@
     <string name="year">Ano</string>
     <string name="info">Informação</string>
     <string name="base_year">Ano Base</string>
+    <string name="income">Receita</string>
+    <string name="expense">Despesa</string>
 </resources>

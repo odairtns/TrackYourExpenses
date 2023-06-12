@@ -81,7 +81,7 @@
             android:layout_below="@+id/viewrecordTripBudgetText"
             android:layout_alignParentStart="true"
             android:padding="3dp"
-            android:text="@string/amount"
+            android:text="@string/expense"
             android:textSize="15sp"
             android:textStyle="italic|bold" />
 
@@ -129,6 +129,27 @@
             android:padding="3dp"
             android:textSize="15sp" />
 
+        <TextView
+            android:id="@+id/viewrecordTotalIncomeText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/viewrecordBalanceText"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="183dp"
+            android:padding="3dp"
+            android:text="@string/income"
+            android:textSize="15sp"
+            android:textStyle="italic|bold"  />
+
+        <TextView
+            android:id="@+id/viewrecordTotalIncome"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/viewrecordBalance"
+            android:layout_alignParentStart="true"
+            android:layout_marginStart="242dp"
+            android:padding="3dp"
+            android:textSize="15sp" />
 
         <TextView
             android:id="@+id/viewrecordTripDescriptionText"
@@ -227,6 +248,7 @@
             android:textColor="@color/colorLightRed"
             android:textSize="20sp"
             android:textStyle="italic" />
+
     </RelativeLayout>
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton

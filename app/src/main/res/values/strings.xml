@@ -15,11 +15,12 @@
     <string name="finish_date">Finish Date:</string>
     <string name="destination">Destination:</string>
     <string name="save">Save</string>
-    <string name="amount">Amount</string>
+    <string name="amount">Valor</string>
     <string name="currency">Currency</string>
     <string name="exp_type">Expense Type</string>
     <string name="place">Place</string>
     <string name="go">GO</string>
+    <string name="expense">Expense</string>
     <string name="new_trip">New Trip</string>
     <string name="mainScreenTitle">Track Your Expenses!</string>
     <string name="searchTrip">Search</string>

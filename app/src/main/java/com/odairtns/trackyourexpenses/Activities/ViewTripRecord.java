@@ -1,5 +1,7 @@
 package com.odairtns.trackyourexpenses.Activities;
 
+import static com.odairtns.trackyourexpenses.R.*;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -30,7 +32,7 @@ import java.util.Locale;
 
 public class ViewTripRecord extends AppCompatActivity implements View.OnClickListener {
     private TextView mTrip, mDescription, mAmount, mStdCurrency, mNoRecordAdded, mBudget, mBalance,
-            mBudgetText, mBalanceText, mTripSummary;
+            mBudgetText, mBalanceText, mTripSummary, mIncomeText;
     private ViewTripRecordAdapter adapter;
     private  RecyclerView recyclerView;
     private DbHandler dbHandler;
@@ -45,8 +47,8 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_view_trip_record);
-        setTitle(getResources().getString(R.string.view_expenses));
+        setContentView(layout.activity_view_trip_record);
+        setTitle(getResources().getString(string.view_expenses));
 
         dbHandler = new DbHandler(this);
         selectedTrip = new Trip();
@@ -55,33 +57,34 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
         tripRecordList = dbHandler.getTripRecords(tripID);
 
 
-        mTrip = findViewById(R.id.viewrecordTripLabel);
+        mTrip = findViewById(id.viewrecordTripLabel);
         mTrip.setText(selectedTrip.getLabel());
-        mTripSummary = findViewById(R.id.viewrecordSummaryText);
-        mTripSummary.setText(getResources().getString(R.string.trip_summary) + " " +selectedTrip.getLabel());
+        mTripSummary = findViewById(id.viewrecordSummaryText);
+        mTripSummary.setText(getResources().getString(string.trip_summary) + " " +selectedTrip.getLabel());
         mTrip.setVisibility(View.GONE);
 
-        mDescription = findViewById(R.id.viewrecordTripDescription);
-        mAmount = findViewById(R.id.viewrecordTotalAmount);
-        mAmount.setText(getResources().getString(R.string.no_expense_added));
+        mDescription = findViewById(id.viewrecordTripDescription);
+        mAmount = findViewById(id.viewrecordTotalAmount);
+        mAmount.setText(getResources().getString(string.no_expense_added));
 
         mDescription.setText(selectedTrip.getDescription());
-        mStdCurrency = findViewById(R.id.viewrecordStdCurrency);
+        mStdCurrency = findViewById(id.viewrecordStdCurrency);
         mStdCurrency.setText(selectedTrip.getStdCurrency());
-        mNoRecordAdded = findViewById(R.id.viewrecordNoRecordText);
-        mBudget  = findViewById(R.id.viewrecordTripBudget);
+        mNoRecordAdded = findViewById(id.viewrecordNoRecordText);
+        mBudget  = findViewById(id.viewrecordTripBudget);
 
-        mBalance  = findViewById(R.id.viewrecordBalance);
-        mBudgetText  = findViewById(R.id.viewrecordTripBudgetText);
-        mBalanceText  = findViewById(R.id.viewrecordBalanceText);
+        mBalance  = findViewById(id.viewrecordBalance);
+        mBudgetText  = findViewById(id.viewrecordTripBudgetText);
+        mBalanceText  = findViewById(id.viewrecordBalanceText);
+        mIncomeText  = findViewById(id.viewrecordTotalIncome);
 
-        viewChart = findViewById(R.id.viewrecordViewChart);
+        viewChart = findViewById(id.viewrecordViewChart);
         viewChart.setOnClickListener(this);
 
-        editExgRate = findViewById(R.id.viewrecordExchanceRate);
+        editExgRate = findViewById(id.viewrecordExchanceRate);
         editExgRate.setOnClickListener(this);
 
-        recyclerView = findViewById(R.id.viewrecordRecyclerView);
+        recyclerView = findViewById(id.viewrecordRecyclerView);
 
         setLayout();
 
@@ -126,11 +129,11 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
             displayBudget();
             recyclerView.setVisibility(View.GONE);
             mNoRecordAdded.setVisibility(View.VISIBLE);
-            String text = getResources().getString(R.string.no_record_added);
+            String text = getResources().getString(string.no_record_added);
             mNoRecordAdded.setText(text);
         }
 
-        fab = findViewById(R.id.viewrecordFAB);
+        fab = findViewById(id.viewrecordFAB);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -167,11 +170,11 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
             displayBudget();
             recyclerView.setVisibility(View.GONE);
             mNoRecordAdded.setVisibility(View.VISIBLE);
-            String text = getResources().getString(R.string.no_record_added);
+            String text = getResources().getString(string.no_record_added);
             mNoRecordAdded.setText(text);
         }
 
-        fab = findViewById(R.id.viewrecordFAB);
+        fab = findViewById(id.viewrecordFAB);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -224,6 +227,13 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
         return totalAmount;
     }
 
+    public double getIncomeAmount (List<TripRecord> recordList){
+        double totalIncome = 0;
+        for(TripRecord listEntry : recordList){
+            totalIncome = totalIncome + listEntry.getAmountStdCurrency();
+        }
+        return totalIncome;
+    }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.share_menu, menu);
@@ -240,7 +250,7 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
         }
 
       */
-        if(item.getItemId() == R.id.share){
+        if(item.getItemId() == id.share){
             shareTrip();
         }
         return super.onOptionsItemSelected(item);
@@ -263,11 +273,11 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
             double percent = getAmountStd(tripRecordList) / selectedTrip.getBudget().doubleValue();
             if(getAmountStd(tripRecordList)>0)
                 if(percent <= 0.5)
-                    mBalance.setTextColor(getResources().getColor(R.color.colorStdBlue,getTheme()));
+                    mBalance.setTextColor(getResources().getColor(color.colorStdBlue,getTheme()));
                 else if(percent <= 0.75)
-                    mBalance.setTextColor(getResources().getColor(R.color.colorYellow,getTheme()));
+                    mBalance.setTextColor(getResources().getColor(color.colorYellow,getTheme()));
                 else
-                    mBalance.setTextColor(getResources().getColor(R.color.colorRed,getTheme()));
+                    mBalance.setTextColor(getResources().getColor(color.colorRed,getTheme()));
             mBalance.setText(String.valueOf(nf.format(balance)));
 
         }
@@ -285,33 +295,33 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
                 stdAmount;
         StringBuilder emailDetails = new StringBuilder();
 
-        emailDetails.append(getResources().getString(R.string.std_currency_)+": "+shareTrip.getStdCurrency()+"\n");
-        emailDetails.append(getResources().getString(R.string.budget)+": "+nf.format(shareTrip.getBudget())+"\n");
-        emailDetails.append(getResources().getString(R.string.balance)+": "+nf.format(balance)+"\n");
-        emailDetails.append(getResources().getString(R.string.total_amount)+" "+shareTrip.getStdCurrency()+": "+nf.format(stdAmount)+"\n");
-        emailDetails.append(getResources().getString(R.string.description)+": "+shareTrip.getDescription()+"\n");
+        emailDetails.append(getResources().getString(string.std_currency_)+": "+shareTrip.getStdCurrency()+"\n");
+        emailDetails.append(getResources().getString(string.budget)+": "+nf.format(shareTrip.getBudget())+"\n");
+        emailDetails.append(getResources().getString(string.balance)+": "+nf.format(balance)+"\n");
+        emailDetails.append(getResources().getString(string.total_amount)+" "+shareTrip.getStdCurrency()+": "+nf.format(stdAmount)+"\n");
+        emailDetails.append(getResources().getString(string.description)+": "+shareTrip.getDescription()+"\n");
         emailDetails.append("\n\n");
 
 
         for(TripRecord c : tripRecordList){
-            emailDetails.append(getResources().getString(R.string.date)+": "+c.getDate()+"\n");
-            emailDetails.append(getResources().getString(R.string.type)+": "+c.getExpType()+"\n");
-            emailDetails.append(getResources().getString(R.string.payment)+": "+c.getPaymentMethod()+"\n");
-            emailDetails.append(getResources().getString(R.string.amount)+": "+nf.format(c.getAmount())+" "+c.getCurrency()+"\n");
-            emailDetails.append(getResources().getString(R.string.amount_std_currency)+": "+nf.format(c.getAmountStdCurrency())+"\n");
-            emailDetails.append(getResources().getString(R.string.details)+": "+c.getDetails()+"\n");
+            emailDetails.append(getResources().getString(string.date)+": "+c.getDate()+"\n");
+            emailDetails.append(getResources().getString(string.type)+": "+c.getExpType()+"\n");
+            emailDetails.append(getResources().getString(string.payment)+": "+c.getPaymentMethod()+"\n");
+            emailDetails.append(getResources().getString(string.amount)+": "+nf.format(c.getAmount())+" "+c.getCurrency()+"\n");
+            emailDetails.append(getResources().getString(string.amount_std_currency)+": "+nf.format(c.getAmountStdCurrency())+"\n");
+            emailDetails.append(getResources().getString(string.details)+": "+c.getDetails()+"\n");
             emailDetails.append("\n");
         }
 
         Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setType("message/rfc822");
         intent.setData(Uri.parse("mailto:"));
-        intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(R.string.trip_share_subject)+
+        intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(string.trip_share_subject)+
                 ": "+shareTrip.getLabel());
         intent.putExtra(Intent.EXTRA_TEXT, emailDetails.toString());
 
         try{
-            startActivity(Intent.createChooser(intent,getResources().getString(R.string.send_email)));
+            startActivity(Intent.createChooser(intent,getResources().getString(string.send_email)));
         }catch(ActivityNotFoundException e){
             Toast.makeText(ViewTripRecord.this,e.getMessage(),Toast.LENGTH_LONG).show();
         }
@@ -407,14 +417,14 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
                 break;
 
      */
-            case R.id.viewrecordExchanceRate:
+            case id.viewrecordExchanceRate:
                 intent = new Intent(this,TripCurrencies.class);
                 intent.putExtra("TripID",tripID);
                 startActivity(intent);
                 finish();
                 break;
 
-            case R.id.viewrecordViewChart:
+            case id.viewrecordViewChart:
                 intent = new Intent(v.getContext(), TripChart.class);
                 intent.putExtra("TripID",tripID);
                 v.getContext().startActivity(intent);
