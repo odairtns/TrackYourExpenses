@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -101,6 +102,7 @@ public class ViewTripRecordAdapter extends RecyclerView.Adapter<ViewTripRecordAd
     public class TripRecordView extends RecyclerView.ViewHolder implements View.OnClickListener {
         private TextView date, expType, stdAmount, localAmount, localCurrency, stdCurrencyText, paymentMethod;
         private Button infoButton, deleteButton, updateButton;
+         private CheckBox amountType;
         public TripRecordView(@NonNull View itemView) {
             super(itemView);
             date = itemView.findViewById(R.id.viewtriptrecordDate);
@@ -195,22 +197,30 @@ public class ViewTripRecordAdapter extends RecyclerView.Adapter<ViewTripRecordAd
 
     public void updateRecord(final TripRecord updatedRecord, final int position, final View view){
         final EditText mDate, mExpType, mAmount, mCurrency, paymentMethod;
+        final CheckBox mAmountType;
         TextInputEditText mDetails;
+        int amountType;
         dbHandler = new DbHandler(context);
 
         mDate = view.findViewById(R.id.insertrecordDate);
         mExpType = view.findViewById(R.id.insertrecordExpType);
         mAmount = view.findViewById(R.id.insertrecordAmount);
+        mAmountType = view.findViewById(R.id.insertrecordAmountType);
         mDetails = view.findViewById(R.id.insertrecordDetails);
         mCurrency = view.findViewById(R.id.insertrecordCurrency);
         paymentMethod = view.findViewById(R.id.insertrecordPaymentMethod);
-
         updatedRecord.setDate(mDate.getText().toString());
         updatedRecord.setExpType(mExpType.getText().toString());
         updatedRecord.setDetails(mDetails.getText().toString());
+        //06/20/2023 - Adding amount type
+        if(mAmountType.isChecked() == Boolean.FALSE)
+            amountType = -1;
+        else
+            amountType = 1;
         updatedRecord.setCurrency(mCurrency.getText().toString());
-        updatedRecord.setAmount(Double.valueOf(mAmount.getText().toString()));
+        updatedRecord.setAmount(Double.valueOf(mAmount.getText().toString()) * amountType);
         updatedRecord.setPaymentMethod(paymentMethod.getText().toString());
+        updatedRecord.setAmountType(amountType);
 
         dbHandler.updateTripRecord(updatedRecord);
         tripRecordList.set(position,updatedRecord);
@@ -225,6 +235,7 @@ public class ViewTripRecordAdapter extends RecyclerView.Adapter<ViewTripRecordAd
         Button mSaveB, mCancelB, mSaveAdd;
         LinearLayout mLinearLayout;
         final EditText mDate, mExpType, mAmount, mCurrency, paymentMethod;
+        final CheckBox mAmountType;
         TextInputEditText mDetails;
         dbHandler = new DbHandler(context);
 
@@ -234,6 +245,8 @@ public class ViewTripRecordAdapter extends RecyclerView.Adapter<ViewTripRecordAd
         mDate = view.findViewById(R.id.insertrecordDate);
         mExpType = view.findViewById(R.id.insertrecordExpType);
         mAmount = view.findViewById(R.id.insertrecordAmount);
+        mAmountType = view.findViewById(R.id.insertrecordAmountType);
+
         mDetails = view.findViewById(R.id.insertrecordDetails);
         mCurrency = view.findViewById(R.id.insertrecordCurrency);
         mLinearLayout = view.findViewById(R.id.insertrecordButtonLinearLayout);
@@ -243,10 +256,16 @@ public class ViewTripRecordAdapter extends RecyclerView.Adapter<ViewTripRecordAd
         mCancelB.setVisibility(View.GONE);
         mSaveAdd.setVisibility(View.GONE);
         mLinearLayout.setVisibility(View.GONE);
+    //Including Amount Type
 
         mDate.setText(tripRecord.getDate());
         mExpType.setText(tripRecord.getExpType());
-        mAmount.setText(tripRecord.getAmount().toString());
+        double absAmount  = Math.abs(tripRecord.getAmount());
+        mAmount.setText(String.valueOf(absAmount));
+        if(tripRecord.getAmountType() == 1)
+            mAmountType.setChecked(true);
+        else
+            mAmountType.setChecked(false);
         mDetails.setText(tripRecord.getDetails());
         mCurrency.setText(tripRecord.getCurrency());
         paymentMethod.setText(tripRecord.getPaymentMethod());

@@ -63,7 +63,7 @@ public class InsertRecord extends AppCompatActivity implements View.OnClickListe
         trip = dbHandler.getTrip(tripID);
         mCurrency.setText(trip.getStdCurrency());
         getTripMultiCurrency = trip.getMultipleCurrency();
-        mAmountType = findViewById(R.id.amountType);
+        mAmountType = findViewById(R.id.insertrecordAmountType);
         mAmountType.setOnClickListener(this);
 
     }

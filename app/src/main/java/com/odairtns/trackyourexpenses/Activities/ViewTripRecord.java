@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.ActivityNotFoundException;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
@@ -41,7 +42,6 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
     private List<TripRecord> tripRecordList;
     private FloatingActionButton fab;
     private Button  viewChart, editExgRate;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -88,6 +88,12 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
 
         setLayout();
 
+        // To save the last activity name
+        SharedPreferences preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString("lastActivity", "ViewTripRecord"); // Replace "YourActivityName" with the name of your activity
+        editor.apply();
+
     }
     private void setLayout(){
 
@@ -98,9 +104,10 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
             if(selectedTrip.getMultipleCurrency() == Boolean.TRUE){
                 tripRecordList = getStandardAmountList(tripRecordList);
                 Collections.reverse(tripRecordList);
-                mAmount.setText(String.valueOf(nf.format(getAmountStd(tripRecordList))));
+                mAmount.setText(String.valueOf(nf.format(getExpStd(tripRecordList))));
+                mIncomeText.setText(String.valueOf(nf.format(getIncomeStd(tripRecordList))));
             }else{
-                mAmount.setText(String.valueOf(nf.format(getAmountStd(tripRecordList))));
+                mAmount.setText(String.valueOf(nf.format(getExpStd(tripRecordList))));
             }
             displayBudget();
             recyclerView.setVisibility(View.VISIBLE);
@@ -155,9 +162,9 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
             if(selectedTrip.getMultipleCurrency() == Boolean.TRUE){
                 tripRecordList = getStandardAmountList(tripRecordList);
                 Collections.reverse(tripRecordList);
-                mAmount.setText(String.valueOf(nf.format(getAmountStd(tripRecordList))));
+                mAmount.setText(String.valueOf(nf.format(getExpStd(tripRecordList))));
             }else{
-                mAmount.setText(String.valueOf(nf.format(getAmountStd(tripRecordList))));
+                mAmount.setText(String.valueOf(nf.format(getExpStd(tripRecordList))));
             }
             displayBudget();
             recyclerView.setVisibility(View.VISIBLE);
@@ -212,7 +219,7 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
             currentTrip.setId(c.getId());
             currentTrip.setTripID(c.getTripID());
             currentTrip.setPaymentMethod(c.getPaymentMethod());
-            currentTrip.setAmountStdCurrency(dbHandler.getExgRate(c.getTripID(),c.getCurrency()) * c.getAmount());
+            currentTrip.setAmountStdCurrency(dbHandler.getExgRate(c.getTripID(),c.getCurrency()) * c.getAmount() );
             newTripRecordList.add(currentTrip);
         }
 
@@ -223,6 +230,23 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
         double totalAmount = 0;
         for(TripRecord listEntry : recordList){
             totalAmount = totalAmount + listEntry.getAmountStdCurrency();
+        }
+        return totalAmount;
+    }
+    public double getIncomeStd (List<TripRecord> recordList){
+        double totalAmount = 0;
+        for(TripRecord listEntry : recordList){
+            if (listEntry.getAmountStdCurrency() >= 0)
+                totalAmount = totalAmount + listEntry.getAmountStdCurrency();
+        }
+        return totalAmount;
+    }
+
+    public double getExpStd (List<TripRecord> recordList){
+        double totalAmount = 0;
+        for(TripRecord listEntry : recordList){
+            if (listEntry.getAmountStdCurrency() < 0)
+                totalAmount = totalAmount + listEntry.getAmountStdCurrency();
         }
         return totalAmount;
     }
@@ -268,16 +292,15 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
             nf.setMinimumFractionDigits(2);
             mBudget.setText(String.valueOf(nf.format(selectedTrip.getBudget())));
 
-            double balance = selectedTrip.getBudget().doubleValue() -
+            double balance = selectedTrip.getBudget().doubleValue() +
                     getAmountStd(tripRecordList);
-            double percent = getAmountStd(tripRecordList) / selectedTrip.getBudget().doubleValue();
-            if(getAmountStd(tripRecordList)>0)
-                if(percent <= 0.5)
-                    mBalance.setTextColor(getResources().getColor(color.colorStdBlue,getTheme()));
-                else if(percent <= 0.75)
-                    mBalance.setTextColor(getResources().getColor(color.colorYellow,getTheme()));
-                else
-                    mBalance.setTextColor(getResources().getColor(color.colorRed,getTheme()));
+            double percent = Math.abs(getAmountStd(tripRecordList)) / selectedTrip.getBudget().doubleValue();
+            if(percent <= 0.5)
+                mBalance.setTextColor(getResources().getColor(color.colorStdBlue,getTheme()));
+            else if(percent <= 0.75)
+                mBalance.setTextColor(getResources().getColor(color.colorYellow,getTheme()));
+            else
+                mBalance.setTextColor(getResources().getColor(color.colorRed,getTheme()));
             mBalance.setText(String.valueOf(nf.format(balance)));
 
         }
@@ -291,7 +314,7 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
 
         double stdAmount, balance;
         stdAmount = getAmountStd(tripRecordList);
-        balance = selectedTrip.getBudget().doubleValue() -
+        balance = selectedTrip.getBudget().doubleValue() +
                 stdAmount;
         StringBuilder emailDetails = new StringBuilder();
 

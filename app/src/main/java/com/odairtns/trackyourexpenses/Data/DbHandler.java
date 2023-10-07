@@ -335,7 +335,7 @@ public class DbHandler extends SQLiteOpenHelper {
         values.put(DbHelper.COLUMN_DATE,tripRecord.getDate());
         values.put(DbHelper.COLUMN_EXP_TYPE, tripRecord.getExpType());
         values.put(DbHelper.COLUMN_CURRENCY_ID, tripRecord.getCurrency());
-        values.put(DbHelper.COLUMN_AMOUNT, tripRecord.getAmountType() * tripRecord.getAmount());
+        values.put(DbHelper.COLUMN_AMOUNT, tripRecord.getAmount());
         values.put(DbHelper.COLUMN_DETAIL, tripRecord.getDetails());
         values.put(DbHelper.COLUMN_PAYMENT_METHOD, tripRecord.getPaymentMethod());
         values.put(DbHelper.COLUMN_AMOUNT_TYPE, tripRecord.getAmountType());
@@ -351,7 +351,7 @@ public class DbHandler extends SQLiteOpenHelper {
                 DbHelper.COLUMN_CURRENCY_ID + " = '" + tripRecord.getCurrency() +"', "+
                 DbHelper.COLUMN_AMOUNT + " = '" + tripRecord.getAmount() + "', "+
                 DbHelper.COLUMN_DETAIL + " = '" + tripRecord.getDetails() + "', "+
-                DbHelper.COLUMN_PAYMENT_METHOD + " = '" + tripRecord.getPaymentMethod() +
+                DbHelper.COLUMN_PAYMENT_METHOD + " = '" + tripRecord.getPaymentMethod() + "', "+
                 DbHelper.COLUMN_AMOUNT_TYPE + " = '" + tripRecord.getAmountType() +
                 "' where " + DbHelper.COLUMN_ID + " = " + tripRecord.getId() + " and "+
                 DbHelper.COLUMN_TRIP_ID + " = "+ tripRecord.getTripID();
