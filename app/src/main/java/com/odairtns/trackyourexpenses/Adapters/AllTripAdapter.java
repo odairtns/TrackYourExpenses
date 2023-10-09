@@ -72,9 +72,10 @@ public class AllTripAdapter extends RecyclerView.Adapter<AllTripAdapter.AlltripV
         NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
         nf.setMaximumFractionDigits(2);
         nf.setMinimumFractionDigits(2);
-        double getAmountStd = getAmountStd(trip.getID());
+        double  getExpAmountStd = getExpAmountStd(trip.getID());
+        double  getTotalAmountStd = getAmountStd(trip.getID());
 
-        holder.mAmount.setText(String.valueOf(nf.format(getAmountStd)));
+        holder.mAmount.setText(String.valueOf(nf.format(getExpAmountStd)));
         holder.mStdCurrency.setText(trip.getStdCurrency());
 
         if (trip.getBudget().equals(0.0f)) {
@@ -86,10 +87,10 @@ public class AllTripAdapter extends RecyclerView.Adapter<AllTripAdapter.AlltripV
 
             holder.mBudget.setText(String.valueOf(nf.format(trip.getBudget())));
 
-            double balance = trip.getBudget().doubleValue() -
-                    getAmountStd;
-            double percent = getAmountStd / trip.getBudget().doubleValue();
-            if (getAmountStd > 0)
+            double balance = trip.getBudget().doubleValue() +
+                    getTotalAmountStd;
+            double percent = Math.abs(getTotalAmountStd) / trip.getBudget().doubleValue();
+            if (Math.abs(getTotalAmountStd) > 0)
                 if (percent <= 0.5)
                     holder.mBalance.setTextColor(r.getColor(R.color.colorStdBlue, context.getTheme()));
                 else if (percent <= 0.75)
@@ -112,6 +113,20 @@ public class AllTripAdapter extends RecyclerView.Adapter<AllTripAdapter.AlltripV
             for (TripRecord listEntry : currentTrip) {
 
                 totalAmount = totalAmount + dbHandler.getExgRate(tripRecord, listEntry.getCurrency()) * listEntry.getAmount();
+            }
+            return totalAmount;
+        }
+    }
+
+    public double getExpAmountStd(int tripRecord) {
+        double totalAmount = 0;
+        List<TripRecord> currentTrip = dbHandler.getTripRecords(tripRecord);
+        if (currentTrip.size() == 0)
+            return totalAmount;
+        else {
+            for (TripRecord listEntry : currentTrip) {
+                if(listEntry.getAmount() < 0)
+                    totalAmount = totalAmount + dbHandler.getExgRate(tripRecord, listEntry.getCurrency()) * listEntry.getAmount();
             }
             return totalAmount;
         }

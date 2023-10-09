@@ -33,6 +33,8 @@
     <string name="please_insert_label_currency">Please insert label and currency</string>
     <string name="mandatory_fields">All fields are mandatory</string>
     <string name="total_amount">Total Amount</string>
+    <string name="total_income">Total Income</string>
+    <string name="total_expense">Total Expense</string>
     <string name="title_activity_trip_currencies">TripCurrencies</string>
     <string name="std_currency">Standard Currency *</string>
     <string name="std_currency_">Standard Currency</string>

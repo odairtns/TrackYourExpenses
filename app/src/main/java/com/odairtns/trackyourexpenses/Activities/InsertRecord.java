@@ -127,6 +127,10 @@ public class InsertRecord extends AppCompatActivity implements View.OnClickListe
                 day = calendar.get(Calendar.DAY_OF_MONTH);
                 month = calendar.get(Calendar.MONTH) ;
                 year = calendar.get(Calendar.YEAR);
+                calendar.set(Calendar.DAY_OF_MONTH,day);
+                calendar.set(Calendar.MONTH,month);
+                calendar.set(Calendar.YEAR,year);
+                mDate.setText(simpleDateFormat.format(calendar.getTime()));
 
                 DatePickerDialog datePickerDialog = new DatePickerDialog(v.getContext(), new DatePickerDialog.OnDateSetListener() {
                     @Override

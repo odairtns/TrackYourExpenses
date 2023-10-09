@@ -3,6 +3,7 @@ package com.odairtns.trackyourexpenses.Activities;
 import static com.odairtns.trackyourexpenses.R.*;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.FileProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -25,11 +26,16 @@ import com.odairtns.trackyourexpenses.Models.Trip;
 import com.odairtns.trackyourexpenses.Models.TripRecord;
 import com.odairtns.trackyourexpenses.R;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+
+import com.opencsv.CSVWriter;
 
 public class ViewTripRecord extends AppCompatActivity implements View.OnClickListener {
     private TextView mTrip, mDescription, mAmount, mStdCurrency, mNoRecordAdded, mBudget, mBalance,
@@ -306,37 +312,61 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public void shareTrip(){
+    public void shareTrip() {
         Trip shareTrip = selectedTrip;
         NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
         nf.setMaximumFractionDigits(2);
         nf.setMinimumFractionDigits(2);
 
-        double stdAmount, balance;
+        double stdAmount, balance, income, expense;
         stdAmount = getAmountStd(tripRecordList);
+        income = getIncomeAmount(tripRecordList);
+        expense = getExpStd(tripRecordList);
+
         balance = selectedTrip.getBudget().doubleValue() +
                 stdAmount;
         StringBuilder emailDetails = new StringBuilder();
 
-        emailDetails.append(getResources().getString(string.std_currency_)+": "+shareTrip.getStdCurrency()+"\n");
-        emailDetails.append(getResources().getString(string.budget)+": "+nf.format(shareTrip.getBudget())+"\n");
-        emailDetails.append(getResources().getString(string.balance)+": "+nf.format(balance)+"\n");
-        emailDetails.append(getResources().getString(string.total_amount)+" "+shareTrip.getStdCurrency()+": "+nf.format(stdAmount)+"\n");
-        emailDetails.append(getResources().getString(string.description)+": "+shareTrip.getDescription()+"\n");
+        emailDetails.append(getResources().getString(string.std_currency_) + ": " + shareTrip.getStdCurrency() + "\n");
+        emailDetails.append(getResources().getString(string.budget) + ": " + nf.format(shareTrip.getBudget()) + "\n");
+        emailDetails.append(getResources().getString(string.balance) + ": " + nf.format(balance) + "\n");
+        emailDetails.append(getResources().getString(string.total_expense) + " " + shareTrip.getStdCurrency() + ": " + nf.format(expense) + "\n");
+        emailDetails.append(getResources().getString(string.total_income) + " " + shareTrip.getStdCurrency() + ": " + nf.format(income) + "\n");
+        emailDetails.append(getResources().getString(string.description) + ": " + shareTrip.getDescription() + "\n");
         emailDetails.append("\n\n");
 
 
-        for(TripRecord c : tripRecordList){
-            emailDetails.append(getResources().getString(string.date)+": "+c.getDate()+"\n");
-            emailDetails.append(getResources().getString(string.type)+": "+c.getExpType()+"\n");
-            emailDetails.append(getResources().getString(string.payment)+": "+c.getPaymentMethod()+"\n");
-            emailDetails.append(getResources().getString(string.amount)+": "+nf.format(c.getAmount())+" "+c.getCurrency()+"\n");
-            emailDetails.append(getResources().getString(string.amount_std_currency)+": "+nf.format(c.getAmountStdCurrency())+"\n");
-            emailDetails.append(getResources().getString(string.details)+": "+c.getDetails()+"\n");
+        for (TripRecord c : tripRecordList) {
+            emailDetails.append(getResources().getString(string.date) + ": " + c.getDate() + "\n");
+            emailDetails.append(getResources().getString(string.type) + ": " + c.getExpType() + "\n");
+            emailDetails.append(getResources().getString(string.payment) + ": " + c.getPaymentMethod() + "\n");
+            emailDetails.append(getResources().getString(string.amount) + ": " + nf.format(c.getAmount()) + " " + c.getCurrency() + "\n");
+            emailDetails.append(getResources().getString(string.amount_std_currency) + ": " + nf.format(c.getAmountStdCurrency()) + "\n");
+            emailDetails.append(getResources().getString(string.details) + ": " + c.getDetails() + "\n");
             emailDetails.append("\n");
         }
 
-        Intent intent = new Intent(Intent.ACTION_SENDTO);
+        // Create a CSV file
+        File csvFile = createCSVFile();
+
+        // Attach the CSV file to the email intent
+        Intent intent = new Intent(Intent.ACTION_SEND);
+        intent.setType("text/csv");
+        intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(string.trip_share_subject) + ": " + shareTrip.getLabel());
+        intent.putExtra(Intent.EXTRA_TEXT, emailDetails.toString());
+
+        Uri fileUri = FileProvider.getUriForFile(this, getPackageName() + ".fileprovider", csvFile);
+        intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+        intent.putExtra(Intent.EXTRA_STREAM, fileUri);
+
+        // Launch the email chooser
+        try {
+            startActivity(Intent.createChooser(intent, getResources().getString(string.send_email)));
+        } catch (ActivityNotFoundException e) {
+            Toast.makeText(ViewTripRecord.this, e.getMessage(), Toast.LENGTH_LONG).show();
+        }
+
+        /*Intent intent = new Intent(Intent.ACTION_SENDTO);
         intent.setType("message/rfc822");
         intent.setData(Uri.parse("mailto:"));
         intent.putExtra(Intent.EXTRA_SUBJECT, getResources().getString(string.trip_share_subject)+
@@ -347,10 +377,36 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
             startActivity(Intent.createChooser(intent,getResources().getString(string.send_email)));
         }catch(ActivityNotFoundException e){
             Toast.makeText(ViewTripRecord.this,e.getMessage(),Toast.LENGTH_LONG).show();
-        }
-
+        }*/
 
     }
+    private File createCSVFile() {
+        // Create a temporary CSV file
+        NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
+        File csvFile = new File(getCacheDir(), "trip_data.csv");
+
+        try (CSVWriter writer = new CSVWriter(new FileWriter(csvFile))) {
+            // Write CSV data
+            // You need to modify this part to write your data in the desired CSV format
+            // For example, you can write headers and rows here
+            writer.writeNext(new String[]{"Date", "Type", "Payment", "Amount", "Amount (Std Currency)", "Details"});
+            for (TripRecord c : tripRecordList) {
+                writer.writeNext(new String[]{
+                        c.getDate(),
+                        c.getExpType(),
+                        c.getPaymentMethod(),
+                        nf.format(c.getAmount()),
+                        nf.format(c.getAmountStdCurrency()),
+                        c.getDetails()
+                });
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return csvFile;
+    }
+
+
 
     @Override
     public void onBackPressed() {
