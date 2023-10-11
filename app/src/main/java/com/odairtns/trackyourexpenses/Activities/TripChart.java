@@ -2,6 +2,7 @@ package com.odairtns.trackyourexpenses.Activities;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
@@ -25,16 +26,22 @@ import com.odairtns.trackyourexpenses.Data.DbHandler;
 import com.odairtns.trackyourexpenses.Models.Trip;
 import com.odairtns.trackyourexpenses.Models.TripRecord;
 import com.odairtns.trackyourexpenses.R;
+import com.github.mikephil.charting.charts.BarChart; // Import BarChart
+import com.github.mikephil.charting.data.BarData; // Import BarData
+import com.github.mikephil.charting.data.BarDataSet; // Import BarDataSet
+import com.github.mikephil.charting.data.BarEntry; // Import BarEntry
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 
+/* Changing the chart type
 public class TripChart extends AppCompatActivity {
 
     private Context context;
     private PieChart mPieChart;
+    private BarChart mBarChart; // Change to BarChart
     private DbHandler dbHandler;
     private List<TripRecord> tripRecordList;
     private Trip mTrip;
@@ -52,8 +59,6 @@ public class TripChart extends AppCompatActivity {
         tripID = getIntent().getIntExtra("TripID",0);
         mTrip = dbHandler.getTrip(tripID);
         tripRecordList = dbHandler.getTripRecords(tripID);
-        mChartObs = findViewById(R.id.tripchartInfo);
-        mChartObs.setText(getResources().getString(R.string.chart_info)+" "+mTrip.getStdCurrency());
 
         mPieChart = findViewById(R.id.tripchartPiechart);
         setTitle(getResources().getString(R.string.chart));
@@ -178,6 +183,111 @@ public class TripChart extends AppCompatActivity {
         mPieChart.highlightValues(null);
 
         mPieChart.invalidate();
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        Intent intent = new Intent(TripChart.this, ViewTripRecord.class);
+        intent.putExtra("TripID", tripID);
+        startActivity(intent);
+        finish();
+    }
+}
+*/
+
+public class TripChart extends AppCompatActivity {
+
+    private Context context;
+    private BarChart mBarChart; // Change to BarChart
+    private PieChart mPieChart;
+    private DbHandler dbHandler;
+    private List<TripRecord> tripRecordList;
+    private Trip mTrip;
+    private int tripID;
+    private TextView mChartObs;
+
+    @SuppressLint("MissingInflatedId")
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_bar_chart);
+        context = this;
+        dbHandler = new DbHandler(this);
+        tripID = getIntent().getIntExtra("TripID", 0);
+        mTrip = dbHandler.getTrip(tripID);
+        tripRecordList = dbHandler.getTripRecords(tripID);
+        mChartObs = findViewById(R.id.tripchartInfo);
+        mChartObs.setText(getResources().getString(R.string.chart_info) + " " + mTrip.getStdCurrency());
+
+        mBarChart = findViewById(R.id.tripBarChart);  // Change to BarChart
+        setTitle(getResources().getString(R.string.chart));
+        if (tripRecordList.size() > 0) {
+            // Setting up the graph
+            mBarChart.getDescription().setEnabled(false);
+            mBarChart.setExtraOffsets(5, 10, 5, 5);
+
+            mBarChart.setDragDecelerationFrictionCoef(0.95f);
+
+            mBarChart.setDrawBarShadow(false);
+            mBarChart.setDrawValueAboveBar(true);
+
+            mBarChart.setMaxVisibleValueCount(50);
+            mBarChart.setPinchZoom(false);
+
+            mBarChart.setDrawGridBackground(false);
+
+            mBarChart.animateY(1400, Easing.EaseInOutQuad);
+
+            Legend l = mBarChart.getLegend();
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
+            l.setOrientation(Legend.LegendOrientation.VERTICAL);
+            l.setDrawInside(false);
+            l.setXEntrySpace(7f);
+            l.setYEntrySpace(0f);
+            l.setYOffset(0f);
+
+            setBarChartData();
+
+            mBarChart.setOnChartValueSelectedListener(new OnChartValueSelectedListener() {
+                @Override
+                public void onValueSelected(Entry e, Highlight h) {
+                    NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
+                    nf.setMaximumFractionDigits(2);
+                    nf.setMinimumFractionDigits(2);
+                    // Handle the click event for the bar chart here
+                    // You can display information about the selected bar if needed
+                    // Example: Toast.makeText(context, getResources().getString(R.string.amount) + ": " + (nf.format(e.getY())), Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void onNothingSelected() {
+
+                }
+            });
+        }
+    }
+
+    private void setBarChartData() {
+        ArrayList<BarEntry> values = new ArrayList<>();
+        int i = 0;
+        float stdAmount;
+        for (TripRecord c : tripRecordList) {
+            stdAmount =  dbHandler.getExgRate(c.getTripID(),c.getCurrency()) * c.getAmount().floatValue();
+            values.add(new BarEntry(i, stdAmount,c.getExpType()));
+            i++;
+        }
+
+        BarDataSet dataSet = new BarDataSet(values, getResources().getString(R.string.expense_results));
+        dataSet.setColors(ColorTemplate.MATERIAL_COLORS); // Set your desired bar colors
+
+        BarData data = new BarData(dataSet);
+        data.setValueTextSize(10f);
+        data.setBarWidth(0.9f);
+
+        mBarChart.setData(data);
+        mBarChart.invalidate();
     }
 
     @Override

@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context=".Activities.TripChart"
     >
+
     <TextView
         android:id="@+id/tripchartHeader"
         android:layout_width="match_parent"
@@ -18,6 +19,7 @@
         android:gravity="center"
         android:textSize="30sp"
         android:textStyle="bold|italic"></TextView>
+
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -26,14 +28,16 @@
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintVertical_bias="0.05">
-        <com.github.mikephil.charting.charts.PieChart
-            android:id="@+id/tripchartPiechart"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            >
 
-        </com.github.mikephil.charting.charts.PieChart>
+        <!-- Replace PieChart with BarChart -->
+        <com.github.mikephil.charting.charts.BarChart
+            android:id="@+id/tripBarChart"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+        </com.github.mikephil.charting.charts.BarChart>
+
     </RelativeLayout>
+
     <TextView
         android:id="@+id/tripchartInfo"
         android:layout_width="match_parent"
@@ -45,7 +49,6 @@
         android:layout_marginRight="20dp"
         android:gravity="right"
         android:textColor="@color/colorLightRed"
-        android:textSize="15sp"
-        ></TextView>
+        android:textSize="15sp"></TextView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

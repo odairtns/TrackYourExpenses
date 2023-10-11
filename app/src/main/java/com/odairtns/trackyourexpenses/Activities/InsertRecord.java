@@ -66,6 +66,19 @@ public class InsertRecord extends AppCompatActivity implements View.OnClickListe
         mAmountType = findViewById(R.id.insertrecordAmountType);
         mAmountType.setOnClickListener(this);
 
+        // Setting the calendar
+        int year, month, day;
+        final Calendar calendar = Calendar.getInstance();
+        final SimpleDateFormat simpleDateFormat = new SimpleDateFormat("dd/MM/yyyy",
+                Locale.getDefault());
+        day = calendar.get(Calendar.DAY_OF_MONTH);
+        month = calendar.get(Calendar.MONTH) ;
+        year = calendar.get(Calendar.YEAR);
+        calendar.set(Calendar.DAY_OF_MONTH,day);
+        calendar.set(Calendar.MONTH,month);
+        calendar.set(Calendar.YEAR,year);
+        mDate.setText(simpleDateFormat.format(calendar.getTime()));
+
     }
 
     @Override
@@ -75,6 +88,7 @@ public class InsertRecord extends AppCompatActivity implements View.OnClickListe
         intent.putExtra("TripID",tripID);
         AlertDialog.Builder alertDialog = new AlertDialog.Builder(v.getContext());
         final CharSequence[] cs;
+
         switch (v.getId()){
             case R.id.insertrecordCancelB:
                 startActivity(intent);
