@@ -30,6 +30,8 @@ import com.github.mikephil.charting.charts.BarChart; // Import BarChart
 import com.github.mikephil.charting.data.BarData; // Import BarData
 import com.github.mikephil.charting.data.BarDataSet; // Import BarDataSet
 import com.github.mikephil.charting.data.BarEntry; // Import BarEntry
+import com.github.mikephil.charting.formatter.IAxisValueFormatter;
+
 
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -239,14 +241,41 @@ public class TripChart extends AppCompatActivity {
 
             mBarChart.animateY(1400, Easing.EaseInOutQuad);
 
+            //16-10-2023 - Addind formatter
+            /*
+            IAxisValueFormatter xAxisFormatter = new DayAxisValueFormatter(chart);
+
+            XAxis xAxis = chart.getXAxis();
+            xAxis.setPosition(XAxisPosition.BOTTOM);
+            xAxis.setTypeface(tfLight);
+            xAxis.setDrawGridLines(false);
+            xAxis.setGranularity(1f); // only intervals of 1 day
+            xAxis.setLabelCount(7);
+            xAxis.setValueFormatter(xAxisFormatter);
+
+            IAxisValueFormatter custom = new MyAxisValueFormatter();
+
+            YAxis leftAxis = chart.getAxisLeft();
+            leftAxis.setTypeface(tfLight);
+            leftAxis.setLabelCount(8, false);
+            leftAxis.setValueFormatter(custom);
+            leftAxis.setPosition(YAxisLabelPosition.OUTSIDE_CHART);
+            leftAxis.setSpaceTop(15f);
+            leftAxis.setAxisMinimum(0f); // this replaces setStartAtZero(true)
+*/
+
+            // Configure the legends
             Legend l = mBarChart.getLegend();
-            l.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
-            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
-            l.setOrientation(Legend.LegendOrientation.VERTICAL);
+            l.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
+            l.setHorizontalAlignment(Legend.LegendHorizontalAlignment.LEFT);
+            l.setOrientation(Legend.LegendOrientation.HORIZONTAL);
             l.setDrawInside(false);
+            l.setForm(Legend.LegendForm.SQUARE);
+            l.setFormSize(9f);
+            l.setTextSize(11f);
             l.setXEntrySpace(7f);
-            l.setYEntrySpace(0f);
-            l.setYOffset(0f);
+            //l.setYEntrySpace(0f);
+           // l.setYOffset(0f);
 
             setBarChartData();
 
@@ -281,10 +310,14 @@ public class TripChart extends AppCompatActivity {
 
         BarDataSet dataSet = new BarDataSet(values, getResources().getString(R.string.expense_results));
         dataSet.setColors(ColorTemplate.MATERIAL_COLORS); // Set your desired bar colors
+        dataSet.setForm(Legend.LegendForm.SQUARE);
 
+
+        // Configure the data and add legends
         BarData data = new BarData(dataSet);
         data.setValueTextSize(10f);
         data.setBarWidth(0.9f);
+        //data.setValueTypeface(tfLight);
 
         mBarChart.setData(data);
         mBarChart.invalidate();

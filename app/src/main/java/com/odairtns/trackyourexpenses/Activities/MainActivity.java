@@ -23,7 +23,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
             setContentView(R.layout.activity_main);
-        preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
+        /*preferences = getSharedPreferences("MyPrefs", MODE_PRIVATE);
         String lastActivity = preferences.getString("lastActivity", null);
 
         if (lastActivity != null) {
@@ -36,7 +36,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 e.printStackTrace();
             }
         }
-
+*/
             mNewTrip = findViewById(R.id.mainNewTrip);
             mNewTrip.setOnClickListener(this);
             mSearchTrip = findViewById(R.id.mainSearchTrip);
