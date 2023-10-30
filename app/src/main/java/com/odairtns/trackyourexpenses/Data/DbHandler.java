@@ -193,7 +193,7 @@ public class DbHandler extends SQLiteOpenHelper {
         onCreate(db);
         */
         String updateTable = "alter table "+DbHelper.TABLE_TRIP_RECORD+"  add column "+
-                 DbHelper.COLUMN_AMOUNT_TYPE+" INTEGER not null default -1";
+                DbHelper.COLUMN_AMOUNT_TYPE+" INTEGER not null default -1";
         db.execSQL(updateTable);
         String update = "update "+DbHelper.TABLE_TRIP_RECORD+"  set "+
                 DbHelper.COLUMN_AMOUNT_TYPE+" = -1 where "+
@@ -555,6 +555,34 @@ public class DbHandler extends SQLiteOpenHelper {
         cursor.close();
         return list;
     }
+
+    public List<TripRecord> getExpensesSumGroupByType (int tripID){
+        List<TripRecord> list;
+        list = new ArrayList<>();
+        TripRecord tripRecord;
+        SQLiteDatabase db = this.getReadableDatabase();
+        String query = "Select SUM(" + DbHelper.COLUMN_AMOUNT + ") AS TOTAL_AMOUNT, " + DbHelper.COLUMN_TRIP_ID +", "+
+                                DbHelper.COLUMN_EXP_TYPE +", "+ DbHelper.COLUMN_CURRENCY_ID + " from "+DbHelper.TABLE_TRIP_RECORD+" where "+DbHelper.COLUMN_TRIP_ID +
+                " = " + tripID +
+                " group by " + DbHelper.COLUMN_EXP_TYPE + ", "+DbHelper.COLUMN_TRIP_ID + ", "+DbHelper.COLUMN_CURRENCY_ID +
+                " order by TOTAL_AMOUNT asc";
+
+        Cursor cursor = db.rawQuery(query,null);
+        if(cursor.moveToFirst()){
+            do {
+                tripRecord = new TripRecord();
+                tripRecord.setTripID(cursor.getInt(cursor.getColumnIndex(DbHelper.COLUMN_TRIP_ID)));
+                tripRecord.setExpType(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_EXP_TYPE)));
+                tripRecord.setCurrency(cursor.getString(cursor.getColumnIndex(DbHelper.COLUMN_CURRENCY_ID)));
+                tripRecord.setAmount(Math.abs(cursor.getDouble(cursor.getColumnIndex("TOTAL_AMOUNT"))));
+                list.add(tripRecord);
+            }while(cursor.moveToNext());
+        }
+        cursor.close();
+        return list;
+    }
+
+
 
     public TripCurrency getTripCurrencyDetail (int tripID){
 

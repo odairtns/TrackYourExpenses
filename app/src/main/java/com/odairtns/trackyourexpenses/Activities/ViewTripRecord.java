@@ -504,7 +504,7 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
                 break;
 
             case id.viewrecordViewChart:
-                intent = new Intent(v.getContext(), TripChart.class);
+                intent = new Intent(v.getContext(), TripBarChart.class);
                 intent.putExtra("TripID",tripID);
                 v.getContext().startActivity(intent);
                 finish();

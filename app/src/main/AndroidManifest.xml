@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android" package="com.odairtns.trackyourexpenses">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.odairtns.trackyourexpenses">
 
     <uses-permission android:name="android.permission.INTERNET" />
 
@@ -10,26 +11,32 @@
         android:roundIcon="@mipmap/ic_launcher_2_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name="com.odairtns.trackyourexpenses.Activities.InsertRecord"></activity>
-        <activity android:name="com.odairtns.trackyourexpenses.Activities.NewTrip" />
-        <activity android:name="com.odairtns.trackyourexpenses.Activities.SearchTrip" />
-        <activity android:name="com.odairtns.trackyourexpenses.Activities.TripChart" />
-        <activity android:name="com.odairtns.trackyourexpenses.Activities.ViewTripRecord" />
         <activity
-            android:name="com.odairtns.trackyourexpenses.Activities.TripCurrencies"
+            android:name=".Activities.TripBarChart"
+            android:exported="false" />
+        <activity android:name=".Activities.InsertRecord" />
+        <activity android:name=".Activities.NewTrip" />
+        <activity android:name=".Activities.SearchTrip" />
+        <activity android:name=".Activities.TripChart" />
+        <activity android:name=".Activities.ViewTripRecord" />
+        <activity
+            android:name=".Activities.TripCurrencies"
             android:label="@string/title_activity_trip_currencies"
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name="com.odairtns.trackyourexpenses.Activities.ExpenseType"
+            android:name=".Activities.ExpenseType"
             android:label="@string/title_activity_expense_type"
             android:theme="@style/AppTheme.NoActionBar" />
-        <activity android:name="com.odairtns.trackyourexpenses.Activities.MainActivity"
+        <activity
+            android:name=".Activities.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
         <provider
             android:name="androidx.core.content.FileProvider"
             android:authorities="com.odairtns.trackyourexpenses.fileprovider"
@@ -39,7 +46,6 @@
                 android:name="android.support.FILE_PROVIDER_PATHS"
                 android:resource="@xml/file_paths" />
         </provider>
-
     </application>
 
 </manifest>
