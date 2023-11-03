@@ -1,8 +1,8 @@
 package com.odairtns.trackyourexpenses.Data;
 
 public class DbHelper {
-    public static final int DB_VERSION = 3;
-    public static final String DB_NAME = "TRACK_YOUR_TRIP";
+    public static final int DB_VERSION = 4;
+    public static final String DB_NAME = "TRACK_YOUR_EXPENSES";
 
     public static final String TABLE_TRIP = "TRIP";
     public static final String TABLE_TRIP_RECORD = "TRIP_RECORD";
