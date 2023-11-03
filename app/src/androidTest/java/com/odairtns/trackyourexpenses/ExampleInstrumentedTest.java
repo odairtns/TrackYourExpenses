@@ -22,6 +22,6 @@ public class ExampleInstrumentedTest {
         // Context of the app under test.
         Context appContext = InstrumentationRegistry.getInstrumentation().getTargetContext();
 
-        assertEquals("com.odairtns.trackyourtrip", appContext.getPackageName());
+        assertEquals("com.odairtns.trackyourexpenses", appContext.getPackageName());
     }
 }
