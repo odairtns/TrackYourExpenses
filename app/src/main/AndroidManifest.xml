@@ -17,7 +17,6 @@
         <activity android:name=".Activities.InsertRecord" />
         <activity android:name=".Activities.NewTrip" />
         <activity android:name=".Activities.SearchTrip" />
-        <activity android:name=".Activities.TripChart" />
         <activity android:name=".Activities.ViewTripRecord" />
         <activity
             android:name=".Activities.TripCurrencies"

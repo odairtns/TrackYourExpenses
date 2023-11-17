@@ -72,6 +72,16 @@ public class TripBarChart extends AppCompatActivity {
             YAxis leftAxis = barChart.getAxisLeft();
             leftAxis.setDrawGridLines(true);
             leftAxis.setSpaceTop(15f);
+            leftAxis.setPosition(YAxis.YAxisLabelPosition.OUTSIDE_CHART);
+            leftAxis.setSpaceTop(15f);
+            leftAxis.setAxisMinimum(0f);
+
+            YAxis rightAxis = barChart.getAxisRight();
+            rightAxis.setDrawGridLines(false);
+            rightAxis.setLabelCount(8, false);
+            rightAxis.setSpaceTop(15f);
+            rightAxis.setAxisMinimum(0f);
+
             barChart.animateY(1400, Easing.EaseInOutQuad);
 
             barChart.getAxisRight().setEnabled(false);
@@ -108,11 +118,15 @@ public class TripBarChart extends AppCompatActivity {
 
 // Set legend
             Legend legend = barChart.getLegend();
-            legend.setForm(Legend.LegendForm.SQUARE);
-            legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
-            legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
+            legend.setVerticalAlignment(Legend.LegendVerticalAlignment.TOP);
+            legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.RIGHT);
             legend.setOrientation(Legend.LegendOrientation.VERTICAL);
-            legend.setDrawInside(false);
+            legend.setDrawInside(true);
+            legend.setForm(Legend.LegendForm.SQUARE);
+            legend.setFormSize(9f);
+            legend.setTextSize(11f);
+            legend.setXEntrySpace(4f);
+
 
 // Set custom labels for the legend
             LegendEntry[] legendEntries = new LegendEntry[expenseNames.size()];
@@ -126,6 +140,7 @@ public class TripBarChart extends AppCompatActivity {
             legend.setCustom(legendEntries);
 
             // Refresh the chart
+            barChart.animateXY(2000, 2000);
             barChart.invalidate();
         }
     }
@@ -146,4 +161,6 @@ public class TripBarChart extends AppCompatActivity {
         startActivity(intent);
         finish();
     }
+
+
 }
