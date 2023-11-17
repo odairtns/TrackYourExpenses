@@ -49,7 +49,7 @@ public class NewTrip extends AppCompatActivity implements View.OnClickListener {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_new_trip);
-        setTitle(R.string.new_trip);
+        setTitle(R.string.base_period);
         mLabel = findViewById(R.id.newtripLabel);
         mCurrency = findViewById(R.id.newtripCurrency);
         mBudget = findViewById(R.id.newtripBudget);

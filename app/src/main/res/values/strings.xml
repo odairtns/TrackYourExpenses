@@ -162,5 +162,6 @@
     <string name="year">Year</string>
     <string name="info">Info</string>
     <string name="income">Income</string>
+    <string name="base_period">New Base Period</string>
 
 </resources>

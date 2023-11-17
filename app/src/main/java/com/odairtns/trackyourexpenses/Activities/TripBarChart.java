@@ -88,8 +88,8 @@ public class TripBarChart extends AppCompatActivity {
             }
 
             BarDataSet dataSet = new BarDataSet(entries, getResources().getString(R.string.expense_results));
-            //dataSet.setColors(getBarColors(entries.size()));
-            dataSet.setColors(ColorTemplate.MATERIAL_COLORS); // Set your desired bar colors
+            dataSet.setColors(getBarColors(entries.size()));
+            //dataSet.setColors(ColorTemplate.MATERIAL_COLORS); // Set your desired bar colors
             dataSet.setForm(Legend.LegendForm.SQUARE);
 
             BarData barData = new BarData(dataSet);
@@ -111,7 +111,7 @@ public class TripBarChart extends AppCompatActivity {
             legend.setForm(Legend.LegendForm.SQUARE);
             legend.setVerticalAlignment(Legend.LegendVerticalAlignment.BOTTOM);
             legend.setHorizontalAlignment(Legend.LegendHorizontalAlignment.CENTER);
-            legend.setOrientation(Legend.LegendOrientation.HORIZONTAL);
+            legend.setOrientation(Legend.LegendOrientation.VERTICAL);
             legend.setDrawInside(false);
 
 // Set custom labels for the legend

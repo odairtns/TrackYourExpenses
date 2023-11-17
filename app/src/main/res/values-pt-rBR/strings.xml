@@ -112,4 +112,5 @@
     <string name="expense">Despesa</string>
     <string name="total_income">Receita Total</string>
     <string name="total_expense">Gasto Total</string>
+    <string name="base_period">Novo Período</string>
 </resources>
