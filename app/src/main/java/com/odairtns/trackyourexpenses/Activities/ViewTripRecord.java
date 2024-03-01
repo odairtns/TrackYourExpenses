@@ -1,5 +1,6 @@
 package com.odairtns.trackyourexpenses.Activities;
 
+import static android.view.View.GONE;
 import static com.odairtns.trackyourexpenses.R.*;
 
 import androidx.appcompat.app.AppCompatActivity;
@@ -67,7 +68,7 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
         mTrip.setText(selectedTrip.getLabel());
         mTripSummary = findViewById(id.viewrecordSummaryText);
         mTripSummary.setText(getResources().getString(string.trip_summary) + " " +selectedTrip.getLabel());
-        mTrip.setVisibility(View.GONE);
+        mTrip.setVisibility(GONE);
 
         mDescription = findViewById(id.viewrecordTripDescription);
         mAmount = findViewById(id.viewrecordTotalAmount);
@@ -83,6 +84,7 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
         mBudgetText  = findViewById(id.viewrecordTripBudgetText);
         mBalanceText  = findViewById(id.viewrecordBalanceText);
         mIncomeText  = findViewById(id.viewrecordTotalIncome);
+        mIncomeText.setVisibility(GONE);
 
         viewChart = findViewById(id.viewrecordViewChart);
         viewChart.setOnClickListener(this);
@@ -111,13 +113,14 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
                 tripRecordList = getStandardAmountList(tripRecordList);
                 Collections.reverse(tripRecordList);
                 mAmount.setText(String.valueOf(nf.format(getExpStd(tripRecordList))));
+                mIncomeText.setVisibility(View.VISIBLE);
                 mIncomeText.setText(String.valueOf(nf.format(getIncomeStd(tripRecordList))));
             }else{
                 mAmount.setText(String.valueOf(nf.format(getExpStd(tripRecordList))));
             }
             displayBudget();
             recyclerView.setVisibility(View.VISIBLE);
-            mNoRecordAdded.setVisibility(View.GONE);
+            mNoRecordAdded.setVisibility(GONE);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
             adapter = new ViewTripRecordAdapter(tripRecordList, this);
@@ -140,7 +143,7 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
 
         }else{
             displayBudget();
-            recyclerView.setVisibility(View.GONE);
+            recyclerView.setVisibility(GONE);
             mNoRecordAdded.setVisibility(View.VISIBLE);
             String text = getResources().getString(string.no_record_added);
             mNoRecordAdded.setText(text);
@@ -169,19 +172,21 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
                 tripRecordList = getStandardAmountList(tripRecordList);
                 Collections.reverse(tripRecordList);
                 mAmount.setText(String.valueOf(nf.format(getExpStd(tripRecordList))));
+                mIncomeText.setText(String.valueOf(nf.format(getIncomeStd(tripRecordList))));
             }else{
                 mAmount.setText(String.valueOf(nf.format(getExpStd(tripRecordList))));
+                mIncomeText.setText(String.valueOf(nf.format(getIncomeStd(tripRecordList))));
             }
             displayBudget();
             recyclerView.setVisibility(View.VISIBLE);
-            mNoRecordAdded.setVisibility(View.GONE);
+            mNoRecordAdded.setVisibility(GONE);
             recyclerView.setHasFixedSize(true);
             recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
 
         }else{
             displayBudget();
-            recyclerView.setVisibility(View.GONE);
+            recyclerView.setVisibility(GONE);
             mNoRecordAdded.setVisibility(View.VISIBLE);
             String text = getResources().getString(string.no_record_added);
             mNoRecordAdded.setText(text);
@@ -288,10 +293,10 @@ public class ViewTripRecord extends AppCompatActivity implements View.OnClickLis
 
     public void displayBudget(){
         if(selectedTrip.getBudget().equals(0.0f)){
-            mBudget.setVisibility(View.GONE);
-            mBalance.setVisibility(View.GONE);
-            mBudgetText.setVisibility(View.GONE);
-            mBalanceText.setVisibility(View.GONE);
+            mBudget.setVisibility(GONE);
+            mBalance.setVisibility(GONE);
+            mBudgetText.setVisibility(GONE);
+            mBalanceText.setVisibility(GONE);
         }else {
             NumberFormat nf = NumberFormat.getInstance(Locale.getDefault());
             nf.setMaximumFractionDigits(2);
